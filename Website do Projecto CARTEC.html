@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARTEC - Tecnologia Automotiva Avançada | Mobilidade Autónoma</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN for visual statistics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        tech: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#026aa2',
+                            700: '#035485',
+                            800: '#074268',
+                            900: '#0c2e4a',
+                            dark: '#050a15',
+                            card: '#0d1527'
+                        },
+                        danger: '#ef4444',
+                        accent: '#10b981',
+                        warning: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #040812;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(13, 21, 39, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.12);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-panel-hover:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px -10px rgba(14, 165, 233, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #00a8ff 40%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-danger {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-success {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #38bdf8;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.9);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link.active {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #38bdf8;
+            border-radius: 2px;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4)); }
+            50% { filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.8)); }
+        }
+
+        .logo-glow {
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #040812;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-24">
+                
+                <!-- CARTEC Official Logo SVG Integration -->
+                <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('inicio')">
+                    <div class="w-12 h-12 flex items-center justify-center logo-glow">
+                        <svg viewBox="0 0 120 120" class="w-full h-full">
+                            <defs>
+                                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0284c7" />
+                                    <stop offset="50%" stop-color="#38bdf8" />
+                                    <stop offset="100%" stop-color="#0284c7" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="60" cy="60" r="48" fill="none" stroke="url(#logoGrad)" stroke-width="7" opacity="0.9"/>
+                            <circle cx="60" cy="60" r="38" fill="none" stroke="#0f172a" stroke-width="4"/>
+                            
+                            <path d="M 25,62 C 30,55 42,48 58,48 C 72,48 85,55 92,58 L 102,52 L 95,65" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 22,66 L 38,66 C 42,66 45,72 50,72 C 55,72 58,66 75,66 C 80,66 83,72 88,72 C 92,72 95,66 98,66" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                            
+                            <circle cx="38" cy="66" r="2.5" fill="#38bdf8"/>
+                            <circle cx="75" cy="66" r="2.5" fill="#38bdf8"/>
+                            <path d="M 50,55 L 68,55 L 78,60" fill="none" stroke="#00a8ff" stroke-width="2.5"/>
+                            <circle cx="68" cy="55" r="2" fill="#00a8ff"/>
+                            
+                            <polygon points="92,48 108,52 96,62" fill="#38bdf8"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        <span class="font-tech text-2xl font-black tracking-wider text-white flex items-center">
+                            CAR<span class="text-sky-400">TEC</span>
+                        </span>
+                        <span class="text-[9px] uppercase font-extrabold tracking-widest text-slate-300">
+                            TECNOLOGIA AUTOMOTIVA AVANÇADA
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex items-center space-x-7 text-xs font-semibold">
+                    <button onclick="switchTab('inicio')" id="nav-inicio" class="nav-link active text-slate-300 hover:text-white py-2">
+                        <i class="fa-solid fa-house mr-1.5 text-sky-400"></i>Início
+                    </button>
+                    <button onclick="switchTab('modulo1')" id="nav-modulo1" class="nav-link text-slate-300 hover:text-white py-2">
+                        <i class="fa-solid fa-triangle-exclamation mr-1.5 text-red-400"></i>Módulo 01: O Problema
+                    </button>
+                    <button onclick="switchTab('modulo2')" id="nav-modulo2" class="nav-link text-slate-300 hover:text-white py-2">
+                        <i class="fa-solid fa-microchip mr-1.5 text-sky-400"></i>Módulo 02: A Solução
+                    </button>
+                    <button onclick="switchTab('estado')" id="nav-estado" class="nav-link text-slate-300 hover:text-white py-2">
+                        <i class="fa-solid fa-bars-progress mr-1.5 text-emerald-400"></i>Estado do Projeto
+                    </button>
+                    <button onclick="switchTab('parcerias')" id="nav-parcerias" class="nav-link text-slate-300 hover:text-white py-2">
+                        <i class="fa-solid fa-handshake mr-1.5 text-indigo-400"></i>Parcerias & Investimento
+                    </button>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="hidden lg:flex items-center space-x-3">
+                    <button onclick="switchTab('contacto')" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 text-white font-bold text-xs tracking-wide hover:shadow-lg hover:shadow-sky-500/25 border border-sky-400/30 transition">
+                        <i class="fa-solid fa-envelope mr-1.5"></i>Contactar Autor
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-slate-800 px-4 pt-2 pb-6 space-y-3">
+            <button onclick="switchTab('inicio')" class="block w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-800/60 text-slate-200 text-sm font-semibold">
+                <i class="fa-solid fa-house mr-2 text-sky-400"></i>Início
+            </button>
+            <button onclick="switchTab('modulo1')" class="block w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-800/60 text-slate-200 text-sm font-semibold">
+                <i class="fa-solid fa-triangle-exclamation mr-2 text-red-400"></i>Módulo 01: O Problema Global
+            </button>
+            <button onclick="switchTab('modulo2')" class="block w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-800/60 text-slate-200 text-sm font-semibold">
+                <i class="fa-solid fa-microchip mr-2 text-sky-400"></i>Módulo 02: A Solução Proposta
+            </button>
+            <button onclick="switchTab('estado')" class="block w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-800/60 text-slate-200 text-sm font-semibold">
+                <i class="fa-solid fa-bars-progress mr-2 text-emerald-400"></i>Estado do Projeto
+            </button>
+            <button onclick="switchTab('parcerias')" class="block w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-800/60 text-slate-200 text-sm font-semibold">
+                <i class="fa-solid fa-handshake mr-2 text-indigo-400"></i>Parcerias & Investimento
+            </button>
+            <button onclick="switchTab('contacto')" class="block w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-800/60 text-slate-200 text-sm font-semibold">
+                <i class="fa-solid fa-envelope mr-2 text-sky-400"></i>Contacto Directo
+            </button>
+        </div>
+    </header>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="fixed top-28 right-5 z-50 flex flex-col space-y-3 max-w-sm pointer-events-none"></div>
+
+    <!-- Main Content Dynamic Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================================================= -->
+        <!-- TAB 1: INÍCIO & VISÃO GERAL DO PROJETO CARTEC -->
+        <!-- ========================================================================= -->
+        <section id="tab-inicio" class="tab-content active space-y-16">
+            
+            <!-- Hero Banner -->
+            <div class="relative rounded-3xl overflow-hidden glass-panel p-8 sm:p-12 lg:p-16 border border-sky-500/20">
+                <div class="absolute -top-32 -right-32 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold tracking-wide">
+                            <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+                            <span>Proposta de Projeto • Mobilidade Autónoma & Emergência</span>
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                            Projeto CARTEC: <span class="gradient-text">Autocarro Autónomo de Emergência</span>
+                        </h1>
+
+                        <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+                            Um sistema abrangente de <strong>Segurança Ativa e Passiva</strong> com Inteligência Artificial, resposta ultrarrápida (&lt;10ms) e supressão imediata de incêndios. Desenvolvido para erradicar falhas humanas, proteger vidas no transporte coletivo e prevenir elevadas perdas patrimoniais.
+                        </p>
+
+                        <!-- Project Author Badge -->
+                        <div class="flex items-center space-x-4 p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 w-fit">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                                <i class="fa-solid fa-user-gear"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-sky-400 tracking-widest">Autor & Investigador Principal</p>
+                                <p class="text-sm font-extrabold text-white">Adilson Lourenço da Costa Santa-Rosa</p>
+                                <p class="text-[11px] text-slate-400">Santa-Rosa CORP</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <button onclick="switchTab('modulo2')" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-sky-500/30 transition border border-sky-400/30">
+                                Explorar A Solução <i class="fa-solid fa-microchip ml-2"></i>
+                            </button>
+                            <button onclick="switchTab('modulo1')" class="px-6 py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 font-semibold text-sm border border-slate-700 transition">
+                                <i class="fa-solid fa-triangle-exclamation mr-2 text-red-400"></i>Análise de Sinistralidade
+                            </button>
+                        </div>
+
+                        <!-- Key Performance Indicators -->
+                        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
+                            <div>
+                                <p class="text-2xl font-black text-sky-400 font-tech">&lt; 10 ms</p>
+                                <p class="text-xs text-slate-400">Resposta das ECUs</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-black text-emerald-400 font-tech">360°</p>
+                                <p class="text-xs text-slate-400">Perceção LIDAR & Radar</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-black text-indigo-400 font-tech">100%</p>
+                                <p class="text-xs text-slate-400">Supressão Térmica Ativa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Tech Card Showcase -->
+                    <div class="lg:col-span-5">
+                        <div class="relative rounded-2xl p-6 glass-panel border border-sky-500/30 shadow-2xl space-y-6">
+                            <!-- Visual Banner Image -->
+                            <div class="relative h-64 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 group">
+                                <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=800&q=80" 
+                                     alt="Autocarro Autónomo de Emergência CARTEC" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-700 opacity-80"
+                                     onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+                                <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-sky-500/20 backdrop-blur-md border border-sky-400/40 text-sky-300 text-[10px] font-mono font-bold">
+                                    CONCEITO CARTEC
+                                </div>
+                                <div class="absolute bottom-3 left-3 right-3 flex justify-between items-center text-xs">
+                                    <span class="px-2.5 py-1 rounded bg-slate-900/90 text-sky-400 font-mono border border-sky-500/40 flex items-center">
+                                        <i class="fa-solid fa-shield-halved mr-1.5 text-emerald-400"></i> Sistema Ativo AI
+                                    </span>
+                                    <span class="text-slate-300 font-mono text-[11px]">Santa-Rosa CORP</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
+                                    <span>ARQUITETURA DE SEGURANÇA</span>
+                                    <span class="text-sky-400 font-tech">CARTEC 360</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between text-xs p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                                        <span class="flex items-center text-slate-300"><i class="fa-solid fa-eye text-sky-400 mr-2"></i>LiDAR 3D + Radar mmWave</span>
+                                        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono">Monitorização Total</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                                        <span class="flex items-center text-slate-300"><i class="fa-solid fa-bolt text-amber-400 mr-2"></i>Atuação Drive-by-Wire & AEB</span>
+                                        <span class="text-[10px] text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded font-mono">Evasão &lt;10ms</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                                        <span class="flex items-center text-slate-300"><i class="fa-solid fa-fire-extinguisher text-red-400 mr-2"></i>Extinção Névoa / Gás Limpo</span>
+                                        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono">Automático</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- SECTION: INFORMAÇÕES GERAIS DO PROJETO CARTEC -->
+            <!-- ========================================================================= -->
+            <div class="space-y-8">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Informações Gerais sobre o Projeto</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                        Engenharia e Inovação para Mobilidade Autónoma
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        O Projeto CARTEC aborda os três pilares fundamentais da segurança no transporte de passageiros: perceção preditiva, controlo dinâmico autónomo e proteção térmica/mecânica do habitáculo.
+                    </p>
+                </div>
+
+                <!-- 3 Detailed Visual Cards with Images -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Card 1 -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-slate-800 glass-panel-hover flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden bg-slate-950">
+                                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Inteligência Artificial e Processamento Digital CARTEC" 
+                                     class="w-full h-full object-cover opacity-80 hover:scale-105 transition duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-sky-500/20 text-sky-300 font-mono text-[10px] border border-sky-400/30">
+                                    MÓDULO IA & SENSÓRICA
+                                </span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-lg font-bold text-white flex items-center">
+                                    <i class="fa-solid fa-microchip text-sky-400 mr-2"></i> Unidade de Decisão Preditiva
+                                </h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Processador central de alto desempenho com algoritmos de aprendizagem profunda (Deep Learning), capazes de calcular trajetórias de risco e o <strong>Tempo até à Colisão (TTC)</strong> em frações de milissegundo.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2">
+                            <span class="text-[11px] font-mono text-sky-400 flex items-center">
+                                <i class="fa-solid fa-angle-right mr-1"></i> Resposta às ECUs &lt; 10ms
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-slate-800 glass-panel-hover flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden bg-slate-950">
+                                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Controlo Veicular Drive-By-Wire" 
+                                     class="w-full h-full object-cover opacity-80 hover:scale-105 transition duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 font-mono text-[10px] border border-indigo-400/30">
+                                    MÓDULO DRIVE-BY-WIRE
+                                </span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-lg font-bold text-white flex items-center">
+                                    <i class="fa-solid fa-bolt text-indigo-400 mr-2"></i> Atuação Mecânica Autónomica
+                                </h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Substituição dos comandos mecânicos lentos por servomecanismos elétricos. Permite travagem de emergência autónoma (AEB) e desvio ativo de faixa sem dependência dos reflexos do condutor.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2">
+                            <span class="text-[11px] font-mono text-indigo-400 flex items-center">
+                                <i class="fa-solid fa-angle-right mr-1"></i> Travagem e Direção Eletrónica
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-slate-800 glass-panel-hover flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden bg-slate-950">
+                                <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Supressão Térmica Ativa e Segurança do Habitáculo" 
+                                     class="w-full h-full object-cover opacity-80 hover:scale-105 transition duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-mono text-[10px] border border-emerald-400/30">
+                                    MÓDULO TÉRMICO & ESTRUTURAL
+                                </span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-lg font-bold text-white flex items-center">
+                                    <i class="fa-solid fa-shield-cat text-emerald-400 mr-2"></i> Supressão de Incêndios
+                                </h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Rede de difusores automáticos de água nebulizada e gás inerte, aliada a assentos viscoelásticos e zonas de deformação estrutural para máxima proteção dos ocupantes em colisões.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2">
+                            <span class="text-[11px] font-mono text-emerald-400 flex items-center">
+                                <i class="fa-solid fa-angle-right mr-1"></i> Extinção Térmica em Segundos
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- SECTION: ESTATÍSTICAS DE ACIDENTES & VIDAS PERDIDAS -->
+            <!-- ========================================================================= -->
+            <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-red-500/20 space-y-10 relative overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-80 h-80 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="max-w-3xl space-y-3 relative z-10">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>A Realidade dos Acidentes de Viação</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                        Estatísticas Globais de Sinistralidade RODOVIÁRIA
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Os acidentes rodoviários constituem uma epidemia silenciosa no transporte terrestre mundial. Em autocarros e veículos de transporte coletivo de passageiros, as consequências de uma colisão ou incêndio multiplicam-se devido à elevada taxa de ocupação.
+                    </p>
+                </div>
+
+                <!-- Statistics Stat Boxes Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                    
+                    <div class="p-6 rounded-2xl bg-slate-950/80 border border-red-500/30 space-y-2">
+                        <div class="flex justify-between items-center text-red-400">
+                            <i class="fa-solid fa-skull-crossbones text-2xl"></i>
+                            <span class="text-[10px] font-mono uppercase bg-red-500/10 px-2 py-0.5 rounded">OMS Dados</span>
+                        </div>
+                        <p class="text-3xl font-black text-white font-tech gradient-text-danger">1,19 M</p>
+                        <p class="text-xs font-bold text-slate-200">Mortes Anuais no Mundo</p>
+                        <p class="text-[11px] text-slate-400">Vítimas fatais causadas por acidentes rodoviários em todo o planeta.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-950/80 border border-amber-500/30 space-y-2">
+                        <div class="flex justify-between items-center text-amber-400">
+                            <i class="fa-solid fa-user-injured text-2xl"></i>
+                            <span class="text-[10px] font-mono uppercase bg-amber-500/10 px-2 py-0.5 rounded">Incapacidades</span>
+                        </div>
+                        <p class="text-3xl font-black text-amber-400 font-tech">50 M+</p>
+                        <p class="text-xs font-bold text-slate-200">Feridos / Traumatizados</p>
+                        <p class="text-[11px] text-slate-400">Pessoas feridas com sequelas permanentes e incapacidades de trabalho por ano.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-950/80 border border-red-500/30 space-y-2">
+                        <div class="flex justify-between items-center text-red-400">
+                            <i class="fa-solid fa-user-xmark text-2xl"></i>
+                            <span class="text-[10px] font-mono uppercase bg-red-500/10 px-2 py-0.5 rounded">Causa Principal</span>
+                        </div>
+                        <p class="text-3xl font-black text-white font-tech gradient-text-danger">90%</p>
+                        <p class="text-xs font-bold text-slate-200">Origem em Erro Humano</p>
+                        <p class="text-[11px] text-slate-400">Fadiga, excesso de velocidade, distrações ao volante e tempo de reação tardio.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-950/80 border border-indigo-500/30 space-y-2">
+                        <div class="flex justify-between items-center text-indigo-400">
+                            <i class="fa-solid fa-sack-dollar text-2xl"></i>
+                            <span class="text-[10px] font-mono uppercase bg-indigo-500/10 px-2 py-0.5 rounded">Custo Global</span>
+                        </div>
+                        <p class="text-3xl font-black text-indigo-400 font-tech">3%</p>
+                        <p class="text-xs font-bold text-slate-200">Perda do PIB Mundial</p>
+                        <p class="text-[11px] text-slate-400">Impacto económico direto em indemnizações, cuidados médicos e danos materiais.</p>
+                    </div>
+
+                </div>
+
+                <!-- Descriptive accident breakdown -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4 relative z-10">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xl font-bold text-white flex items-center">
+                            <i class="fa-solid fa-bus text-red-400 mr-2"></i> Sinistralidade em Autocarros de Passageiros
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Quando um autocarro se envolve numa colisão de alta energia ou num incêndio no motor, a probabilidade de baixas múltiplas é criticamente elevada. O tempo médio que o cérebro humano necessita para reconhecer o perigo e pressionar o pedal de travão é de <strong>1,5 segundos</strong> — intervalo durante o qual o veículo percorre dezenas de metros sem qualquer desaceleração.
+                        </p>
+                        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2 text-xs">
+                            <div class="flex items-center justify-between text-slate-300">
+                                <span><i class="fa-solid fa-skull text-red-400 mr-2"></i>Risco de Propagação Térmica no Habitáculo:</span>
+                                <span class="text-red-400 font-mono font-bold">&lt; 60 Segundos</span>
+                            </div>
+                            <div class="flex items-center justify-between text-slate-300">
+                                <span><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i>Ângulos Mortos em Veículos Pesados:</span>
+                                <span class="text-amber-400 font-mono font-bold">Até 40% de Visibilidade Cega</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5">
+                        <div class="relative rounded-2xl overflow-hidden border border-slate-800 shadow-xl h-56 bg-slate-950">
+                            <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Estatísticas de Tráfego e Prevenção Rodoviária" 
+                                 class="w-full h-full object-cover opacity-75">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 text-center">
+                                <span class="text-xs font-mono font-bold text-red-400 uppercase tracking-widest bg-red-950/80 px-3 py-1 rounded-full border border-red-500/30">
+                                    Mudar Este Cenário é o Objetivo do CARTEC
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- SECTION: PREVISÃO DE REDUÇÃO DE PERDAS HUMANAS E MATERIAIS -->
+            <!-- ========================================================================= -->
+            <div class="space-y-8">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Modelação de Impacto Projetado</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                        Previsão de Redução de <span class="gradient-text-success">Perdas Humanas e Materiais</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Simulação e análise comparativa baseada na introdução da arquitetura de segurança autónoma do Projeto CARTEC em frotas de transporte público.
+                    </p>
+                </div>
+
+                <!-- Projected Reductions Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Reduction Stat 1 -->
+                    <div class="glass-panel p-6 rounded-3xl border border-emerald-500/30 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-heart-pulse"></i>
+                            </div>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full font-bold">PROJEÇÃO ATUARIAL</span>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-black font-tech text-emerald-400">- 88%</p>
+                            <h3 class="text-base font-bold text-white mt-1">Redução de Vítimas Mortais</h3>
+                            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                A resposta das ECUs em menos de 10ms e o acionamento do travão automático de emergência (AEB) eliminam colisões por distração e atenuam drasticamente a energia do impacto.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Reduction Stat 2 -->
+                    <div class="glass-panel p-6 rounded-3xl border border-sky-500/30 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-sky-500/10 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <span class="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded-full font-bold">IMPACTO FINANCEIRO</span>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-black font-tech text-sky-400">- 82%</p>
+                            <h3 class="text-base font-bold text-white mt-1">Redução de Perdas Materiais</h3>
+                            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                Diminuição drástica de custos de reparação veicular, indemnizações por sinistros e perda total de autocarros das frotas públicas e privadas.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Reduction Stat 3 -->
+                    <div class="glass-panel p-6 rounded-3xl border border-indigo-500/30 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-fire-extinguisher"></i>
+                            </div>
+                            <span class="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full font-bold">SEGURANÇA TÉRMICA</span>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-black font-tech text-indigo-400">- 95%</p>
+                            <h3 class="text-base font-bold text-white mt-1">Contenção de Incêndios</h3>
+                            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                Extinção automática por névoa de água/gás limpo no compartimento do motor impede a propagação de chamas e fumo tóxico para a cabine de passageiros.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Comparison Chart Container (Chart.js) -->
+                <div class="glass-panel p-8 rounded-3xl border border-slate-800 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-sky-400 font-bold uppercase tracking-widest">GRÁFICO COMPARATIVO DE SINISTRALIDADE</span>
+                            <h3 class="text-xl font-bold text-white mt-1">Sem CARTEC (Tradicional) vs. Com CARTEC (Projetado)</h3>
+                        </div>
+                        <div class="flex items-center space-x-4 text-xs font-semibold">
+                            <span class="flex items-center text-red-400"><span class="w-3 h-3 rounded bg-red-500 mr-1.5"></span>Sem CARTEC</span>
+                            <span class="flex items-center text-sky-400"><span class="w-3 h-3 rounded bg-sky-400 mr-1.5"></span>Com CARTEC</span>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Chart Element -->
+                    <div class="relative w-full h-72 sm:h-80">
+                        <canvas id="impactChartCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Sensor Array & 360 Perception Visualizer -->
+            <div class="space-y-8">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                        Matriz de Perceção Ambiental <span class="gradient-text">360°</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Conheça a constelação de sensores integrados do Autocarro Autónomo CARTEC que garante redundância absoluta e visibilidade imune a intempéries.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- Sensor Cards Column -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div onclick="selectSensor('lidar')" id="sensor-btn-lidar" class="p-4 rounded-2xl glass-panel border border-sky-500/40 cursor-pointer hover:border-sky-400 transition flex items-start space-x-4">
+                            <div class="p-3 rounded-xl bg-sky-500/10 text-sky-400 text-xl">
+                                <i class="fa-solid fa-satellite-dish"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center justify-between">
+                                    LIDAR Tridimensional (3D)
+                                    <span class="text-[10px] text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded">360° Coverage</span>
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1">Mapeamento volumétrico de altíssima precisão da geometria da via, imune a variações térmicas e de luminosidade.</p>
+                            </div>
+                        </div>
+
+                        <div onclick="selectSensor('radar')" id="sensor-btn-radar" class="p-4 rounded-2xl glass-panel border border-slate-800 cursor-pointer hover:border-sky-400 transition flex items-start space-x-4">
+                            <div class="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 text-xl">
+                                <i class="fa-solid fa-radar"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center justify-between">
+                                    Radares de Ondas Milimétricas (mmWave)
+                                    <span class="text-[10px] text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">All-Weather</span>
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1">Capacidade de penetração em denso nevoeiro, chuva extrema, fumo tóxico e escuridão total.</p>
+                            </div>
+                        </div>
+
+                        <div onclick="selectSensor('visao')" id="sensor-btn-visao" class="p-4 rounded-2xl glass-panel border border-slate-800 cursor-pointer hover:border-sky-400 transition flex items-start space-x-4">
+                            <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 text-xl">
+                                <i class="fa-solid fa-camera-rotate"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center justify-between">
+                                    Visão Computacional & Deep Learning
+                                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">IA Preditiva</span>
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1">Identificação e classificação instantânea de peões, sinais de trânsito, veículos e cálculo preditivo do TTC (Time to Collision).</p>
+                            </div>
+                        </div>
+
+                        <div onclick="selectSensor('dinamico')" id="sensor-btn-dinamico" class="p-4 rounded-2xl glass-panel border border-slate-800 cursor-pointer hover:border-sky-400 transition flex items-start space-x-4">
+                            <div class="p-3 rounded-xl bg-amber-500/10 text-amber-400 text-xl">
+                                <i class="fa-solid fa-gauge"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center justify-between">
+                                    Sensores de Ângulo de Derrapagem (Slip Angle)
+                                    <span class="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">Controlo ESC</span>
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1">Monitorização contínua da dinâmica do chassis para prevenção ativa de capotamentos em manobras bruscas.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sensor Detail Display Panel -->
+                    <div class="lg:col-span-6 glass-panel p-8 rounded-3xl border border-sky-500/30 text-center space-y-6 relative overflow-hidden">
+                        <div class="absolute -top-12 -right-12 w-48 h-48 bg-sky-500/10 rounded-full blur-xl pointer-events-none"></div>
+
+                        <div id="sensor-display-icon" class="w-20 h-20 rounded-2xl bg-sky-500/20 border border-sky-400/40 text-sky-400 flex items-center justify-center text-4xl mx-auto shadow-lg shadow-sky-500/20">
+                            <i class="fa-solid fa-satellite-dish"></i>
+                        </div>
+
+                        <div>
+                            <span id="sensor-display-tag" class="text-xs font-mono text-sky-400 uppercase tracking-widest font-bold">MÓDULO DE PERCEÇÃO 01</span>
+                            <h3 id="sensor-display-title" class="text-2xl font-black text-white mt-1">LIDAR Tridimensional (3D)</h3>
+                            <p id="sensor-display-desc" class="text-xs sm:text-sm text-slate-300 mt-3 leading-relaxed">
+                                Modula feixes de laser infravermelho para gerar uma nuvem de pontos tridimensional a 360 graus em redor do autocarro. Permite calcular distâncias milimétricas a objetos mesmo sob condições atmosféricas adversas.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 grid grid-cols-2 gap-4 text-left">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase block font-semibold">Taxa de Atualização</span>
+                                <span id="sensor-display-spec1" class="text-sm font-bold text-sky-400 font-mono">100 Hz (100 scans/s)</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase block font-semibold">Alcance Efetivo</span>
+                                <span id="sensor-display-spec2" class="text-sm font-bold text-emerald-400 font-mono">300 Metros</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: MÓDULO 01 - O PROBLEMA GLOBAL -->
+        <!-- ========================================================================= -->
+        <section id="tab-modulo1" class="tab-content space-y-12">
+            <!-- Header Section -->
+            <div class="max-w-3xl space-y-3">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>MÓDULO 01 • Análise de Vulnerabilidades</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                    O Problema Global no Transporte Coletivo
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Análise rigorosa de engenharia sobre as limitações do tempo de reação humano e os riscos térmicos e mecânicos em autocarros de passageiros.
+                </p>
+            </div>
+
+            <!-- Problem Pillars Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Pillar 1: Human Limitations -->
+                <div class="glass-panel p-8 rounded-3xl border-l-4 border-l-red-500 border-y border-r border-slate-800 space-y-5">
+                    <div class="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-mono text-red-400 font-bold uppercase tracking-wider">FATOR CRÍTICO DE RISCO 01</span>
+                        <h3 class="text-xl font-bold text-white mt-1">Limitation Humana & Tempo de Reação</h3>
+                    </div>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        O tempo médio de reação humana perante um obstáculo imprevisto na via é de <strong>1,5 segundos</strong>. Em veículos de grande porte (como autocarros cheios), os ângulos mortos expansivos e a fadiga do condutor amplificam criticamente a probabilidade de acidentes catastróficos.
+                    </p>
+
+                    <!-- Interactive Reaction Time Calculator -->
+                    <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                        <span class="text-xs font-bold text-slate-300 block">Simulador de Distância percorrida em 1,5 segundos:</span>
+                        <div class="flex justify-between items-center text-xs text-slate-400">
+                            <span>Velocidade do Autocarro:</span>
+                            <span id="speed-val" class="text-red-400 font-mono font-bold">90 km/h</span>
+                        </div>
+                        <input id="speed-range" type="range" min="30" max="120" value="90" step="10" oninput="calculateReactionDistance()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer custom-slider accent-red-500">
+                        <div class="p-3 rounded-xl bg-red-950/40 border border-red-500/30 flex justify-between items-center">
+                            <span class="text-xs text-slate-300">Distância percorrida sem travar:</span>
+                            <span id="reaction-dist" class="text-lg font-black text-red-400 font-tech">37,5 metros</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 2: Thermal Propagation -->
+                <div class="glass-panel p-8 rounded-3xl border-l-4 border-l-amber-500 border-y border-r border-slate-800 space-y-5">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-mono text-amber-400 font-bold uppercase tracking-wider">FATOR CRÍTICO DE RISCO 02</span>
+                        <h3 class="text-xl font-bold text-white mt-1">Propagação Térmica no Habitáculo</h3>
+                    </div>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Incêndios originados no compartimento do motor ou por falhas elétricas propagam fumo altamente tóxico e chamas para o habitáculo de passageiros em poucos segundos. A ausência de um sistema automático de supressão imediata reduz dramaticamente o tempo seguro para evacuação.
+                    </p>
+
+                    <div class="space-y-2 pt-2">
+                        <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                            <span class="text-slate-300"><i class="fa-solid fa-skull text-red-400 mr-2"></i>Acumulação de Fumo Tóxico</span>
+                            <span class="text-red-400 font-mono font-bold">&lt; 30 Segundos</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                            <span class="text-slate-300"><i class="fa-solid fa-eye-slash text-amber-400 mr-2"></i>Perda Total de Visibilidade</span>
+                            <span class="text-amber-400 font-mono font-bold">Bloqueio de Saídas</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                            <span class="text-slate-300"><i class="fa-solid fa-hand-holding-hand text-slate-400 mr-2"></i>Dependência de Ação Humana</span>
+                            <span class="text-slate-400 font-mono font-bold">Lenta / Falível</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Heavy Vehicle Accident Factors Breakdown -->
+            <div class="glass-panel p-8 rounded-3xl border border-slate-800 space-y-6">
+                <h3 class="text-xl font-bold text-white flex items-center">
+                    <i class="fa-solid fa-bus text-red-400 mr-3"></i>
+                    Diagnóstico Sumário: Acidentes em Veículos Pesados
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <i class="fa-solid fa-globe text-red-400 text-lg"></i>
+                        <h4 class="text-sm font-bold text-white">Alta Incidência Global</h4>
+                        <p class="text-xs text-slate-400">Colisões com autocarros causam pesadas perdas humanas e financeiras anuais no transporte público.</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <i class="fa-solid fa-stopwatch text-amber-400 text-lg"></i>
+                        <h4 class="text-sm font-bold text-white">Tempo Insuficiente</h4>
+                        <p class="text-xs text-slate-400">Obstáculos repentinos em autoestradas impedem que o condutor trave ou se desvie a tempo.</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <i class="fa-solid fa-eye-slash text-indigo-400 text-lg"></i>
+                        <h4 class="text-sm font-bold text-white">Ângulos Mortos Expansivos</h4>
+                        <p class="text-xs text-slate-400">A reduzida visibilidade lateral e traseira favorece atropelamentos e colisões de ultrapassagem.</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <i class="fa-solid fa-robot text-sky-400 text-lg"></i>
+                        <h4 class="text-sm font-bold text-white">Intervenção Ativa Necessária</h4>
+                        <p class="text-xs text-slate-400">Eliminação da dependência exclusiva do motorista através de atuação mecânica autónoma.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 3: MÓDULO 02 - A SOLUÇÃO PROPOSTA -->
+        <!-- ========================================================================= -->
+        <section id="tab-modulo2" class="tab-content space-y-12">
+            <!-- Header Section -->
+            <div class="max-w-3xl space-y-3">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>MÓDULO 02 • Engenharia de Segurança Avançada</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                    A Solução Proposta pelo <span class="gradient-text">Projeto CARTEC</span>
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Integração de Inteligência Artificial, sistemas de perceção 360°, atuação Drive-by-Wire e segurança passiva avançada.
+                </p>
+            </div>
+
+            <!-- The Three Pillars of CARTEC -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Pillar 1 -->
+                <div class="glass-panel p-6 rounded-3xl glass-panel-hover border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xl">
+                        <i class="fa-solid fa-satellite"></i>
+                    </div>
+                    <span class="text-[10px] font-mono text-sky-400 uppercase font-bold tracking-widest block">PILAR 1</span>
+                    <h3 class="text-xl font-bold text-white">Perceção 360°</h3>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        Fusão de dados via LIDAR, radar mmWave e visão computacional para mapeamento dinâmico em tempo real e cálculo preditivo contínuo do <strong>Tempo até à Colisão (TTC)</strong>.
+                    </p>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="glass-panel p-6 rounded-3xl glass-panel-hover border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <span class="text-[10px] font-mono text-indigo-400 uppercase font-bold tracking-widest block">PILAR 2</span>
+                    <h3 class="text-xl font-bold text-white">Atuação Autónoma</h3>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        Controlo elétrico <strong>Drive-by-Wire</strong>, travagem de emergência automática (AEB) em menos de 10ms e distribuição diferencial de travagem para estabilidade anti-capotamento.
+                    </p>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="glass-panel p-6 rounded-3xl glass-panel-hover border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl">
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                    <span class="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-widest block">PILAR 3</span>
+                    <h3 class="text-xl font-bold text-white">Proteção do Habitáculo</h3>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        Rede de extinção ativa de incêndios por névoa de água/gás limpo e assentos viscoelásticos com zonas de deformação estrutural para mitigação de forças G.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Autonomous Dynamic Response Breakdown (<10ms ECU) -->
+            <div class="glass-panel p-8 rounded-3xl border border-sky-500/30 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <span class="text-xs font-mono text-sky-400 font-bold uppercase tracking-widest">&lt; 10ms TEMPO DE RESPOSTA DAS ECUs</span>
+                        <h3 class="text-2xl font-black text-white mt-1">Atuação Dinâmica Autónoma em Situações Limite</h3>
+                    </div>
+                    <span class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold w-fit">
+                        <i class="fa-solid fa-circle-check mr-1.5"></i> Drive-by-Wire Active
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                        <div class="flex items-center space-x-3 text-sky-400 font-bold text-base">
+                            <i class="fa-solid fa-arrows-split-up-and-left text-xl"></i>
+                            <span>Manobra em Obstrução Lateral</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Algoritmos preditivos de Inteligência Artificial assumem o controlo direcional via Drive-by-Wire, calculando e executando uma trajetória de evasão limpa para o vetor oposto enquanto aplicam travagem diferencial via ESC/ABS para prevenir a saída da estrada e o capotamento.
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                        <div class="flex items-center space-x-3 text-indigo-400 font-bold text-base">
+                            <i class="fa-solid fa-circle-stop text-xl"></i>
+                            <span>Manobra em Obstrução Frontal</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Acionamento instantâneo do Autonomous Emergency Braking (AEB) com desaceleração máxima coordenada com o ABS. O sistema atua substancialmente mais rápido do que qualquer reflexo humano, reduzindo substancialmente a distância total de paragem.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Fire Suppression & Passive Protection Detailed Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Fire Suppression Step-by-Step -->
+                <div class="lg:col-span-6 glass-panel p-8 rounded-3xl border border-slate-800 space-y-6">
+                    <h3 class="text-xl font-bold text-white flex items-center">
+                        <i class="fa-solid fa-fire-extinguisher text-red-400 mr-3"></i>
+                        Supressão Ativa de Incêndios
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 rounded-full bg-red-500/20 text-red-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-1">1</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Deteção Ótica & Térmica em Milissegundos</h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Rede de sensores infravermelhos distribuída no habitáculo e no compartimento do motor para confirmação imediata de focos de ignição.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-1">2</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Abertura de Válvulas Solenóides Ultra-Rápidas</h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Ativação eletromecânica automatizada sem necessidade de qualquer intervenção humana ou botões manuais.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-1">3</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Difusão por Névoa / Gás Limpo Não Tóxico</h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Tubagens dedicadas libertam micro-névoa de água a alta pressão ou gás inerte, abafando o fogo sem intoxicar os passageiros.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passive Protection (Viscoelastic seats & Structural collapse) -->
+                <div class="lg:col-span-6 glass-panel p-8 rounded-3xl border border-slate-800 space-y-6">
+                    <h3 class="text-xl font-bold text-white flex items-center">
+                        <i class="fa-solid fa-chair text-sky-400 mr-3"></i>
+                        Proteção Passiva do Habitáculo
+                    </h3>
+
+                    <div class="space-y-5">
+                        <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                            <h4 class="text-sm font-bold text-sky-400">Assentos Viscoelásticos Absorventes</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Cada assento é concebido como uma célula de absorção energética. A incorporação de polímeros viscoelásticos dissipa a energia cinética durante desacelerações extremas ou impactos inevitáveis, protegendo a coluna e órgãos internos dos passageiros.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                            <h4 class="text-sm font-bold text-indigo-400">Deformação Estrutural Programada</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                A estrutura do chassis do autocarro possui zonas de deformação controlada projetadas para colapsar progressivamente, canalizando a força do impacto para longe das zonas ocupadas por passageiros.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 4: ESTADO DO PROJETO & ROADMAP -->
+        <!-- ========================================================================= -->
+        <section id="tab-estado" class="tab-content space-y-12">
+            <!-- Header -->
+            <div class="max-w-3xl space-y-3">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                    <i class="fa-solid fa-bars-progress"></i>
+                    <span>Relatório de Prontidão Tecnológica (TRL)</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                    Estado Atual de Desenvolvimento
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Acompanhe a evolução do projeto liderado por Adilson Lourenço da Costa Santa-Rosa (Santa-Rosa CORP) desde o conceito teórico até à homologação industrial.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Gauge / TRL Status Box -->
+                <div class="lg:col-span-5 glass-panel p-8 rounded-3xl border border-sky-500/30 text-center space-y-6">
+                    <span class="text-xs font-mono text-sky-400 uppercase tracking-widest font-bold">NÍVEL DE PRONTIDÃO TECNOLÓGICA</span>
+                    <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="text-sky-400" stroke-dasharray="78, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute flex flex-col items-center">
+                            <span class="text-4xl font-black text-white font-tech">TRL 7</span>
+                            <span class="text-[10px] text-emerald-400 font-bold uppercase mt-1">Protótipo em Teste</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Protótipo funcional demonstrado em ambiente operacional simulado e ensaios de atuadores elétricos em estrada fechada.
+                    </p>
+                </div>
+
+                <!-- Timeline Roadmap -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="p-5 rounded-2xl glass-panel border border-slate-800 flex items-start space-x-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-emerald-400 font-mono uppercase font-bold">FASE 1 • CONCLUÍDO</span>
+                            <h4 class="text-base font-bold text-white">Análise P&D e Arquitetura do Sistema</h4>
+                            <p class="text-xs text-slate-400 mt-1">Modelação matemática do tempo de resposta das ECUs, calibração dos algoritmos de fusão de dados LiDAR/Radar e simulação do agente extintor.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-2xl glass-panel border-2 border-sky-500/50 flex items-start space-x-4 relative">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold flex-shrink-0 animate-pulse">
+                            <i class="fa-solid fa-spinner animate-spin"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-sky-400 font-mono uppercase font-bold">FASE 2 • EM CURSO</span>
+                            <h4 class="text-base font-bold text-white">Integração do Protótipo em Autocarro Piloto</h4>
+                            <p class="text-xs text-slate-300 mt-1">Instalação dos servomecanismos Drive-by-Wire, conjunto de válvulas de névoa e testes de travagem automática AEB.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-2xl glass-panel border border-slate-800 opacity-60 flex items-start space-x-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-bold flex-shrink-0">
+                            3
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-mono uppercase font-bold">FASE 3 • PRÓXIMO PASSO</span>
+                            <h4 class="text-base font-bold text-white">Certificação Regulatória e Parcerias Industriais</h4>
+                            <p class="text-xs text-slate-400 mt-1">Homologação junto de autoridades transportadoras e consórcios de fabricação de veículos comerciais.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 5: PARCERIAS & INVESTIMENTO -->
+        <!-- ========================================================================= -->
+        <section id="tab-parcerias" class="tab-content space-y-12">
+            <!-- Header -->
+            <div class="max-w-3xl space-y-3">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Cooperação Estratégica & Capital</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                    Parcerias Industriais e Financiamento
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Procuramos parcerias com fabricantes de frotas, empresas de transporte coletivo, fundos de tecnologia e entidades governamentais.
+                </p>
+            </div>
+
+            <!-- Interactive Form -->
+            <div class="glass-panel p-6 sm:p-10 rounded-3xl border border-sky-500/30 max-w-3xl mx-auto space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold text-white">Solicitar Parceria ou Dossiê de Investimento</h3>
+                    <p class="text-xs text-slate-400 mt-1">Preencha os seus dados para receber a apresentação executiva e especificações técnicas completas.</p>
+                </div>
+
+                <form id="form-parceria-investimento" onsubmit="handleFormSubmit(event, 'Parceria/Investimento')" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Seu Nome / Nome da Empresa *</label>
+                            <input type="text" required placeholder="Ex: Empresa de Transportes ou Investidor" 
+                                   class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">E-mail Profissional *</label>
+                            <input type="email" required placeholder="contacto@empresa.com" 
+                                   class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tipo de Interesse *</label>
+                        <select required class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400">
+                            <option value="">Selecione o tipo de cooperação...</option>
+                            <option value="frota">Operadora de Frota de Autocarros</option>
+                            <option value="industrial">Fabricante Automóvel / Integrador</option>
+                            <option value="investimento">Investidor / Fundo de Venture Capital</option>
+                            <option value="governo">Entidade Reguladora de Trânsito</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Mensagem ou Proposta de Parceria *</label>
+                        <textarea rows="4" required placeholder="Descreva sucintamente como pretende colaborar no desenvolvimento do CARTEC..." 
+                                  class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-sm hover:opacity-95 transition shadow-lg shadow-sky-500/25">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>Enviar Mensagem Direta
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 6: CONTACTAR AUTOR (SANTA-ROSA CORP) -->
+        <!-- ========================================================================= -->
+        <section id="tab-contacto" class="tab-content space-y-12">
+            <!-- Header -->
+            <div class="max-w-3xl space-y-3">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>Contactos Oficiais do Investigador</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">
+                    Contacto Direto com o Autor
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Entre em comunicação direta com a liderança do Projeto CARTEC para agendamento de apresentações técnicas e reuniões de trabalho.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Author Business Card -->
+                <div class="lg:col-span-5 glass-panel p-8 rounded-3xl border border-sky-500/30 space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-sky-500/30 border border-sky-400/30">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-mono font-bold text-sky-400 tracking-wider block">AUTOR & INVESTIGADOR</span>
+                            <h3 class="text-xl font-black text-white">Adilson Lourenço da Costa Santa-Rosa</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Santa-Rosa CORP</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t border-slate-800">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 uppercase font-semibold">E-mail Direto</p>
+                                <a href="mailto:alexcostasantarosa@gmail.com" class="text-sm font-bold text-sky-400 hover:underline">
+                                    alexcostasantarosa@gmail.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3">
+                            <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-building-shield"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 uppercase font-semibold">Organização</p>
+                                <p class="text-sm font-bold text-white">Santa-Rosa CORP</p>
+                                <p class="text-xs text-slate-400">Inovação em Mobilidade Autónoma</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Message Form -->
+                <div class="lg:col-span-7 glass-panel p-8 rounded-3xl border border-slate-800 space-y-4">
+                    <h3 class="text-xl font-bold text-white mb-2">Enviar Mensagem ao Autor</h3>
+
+                    <form id="form-contacto-autor" onsubmit="handleFormSubmit(event, 'Contacto')" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Seu Nome *</label>
+                                <input type="text" required placeholder="Nome completo" 
+                                       class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Seu E-mail *</label>
+                                <input type="email" required placeholder="seuemail@exemplo.com" 
+                                       class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Assunto *</label>
+                            <input type="text" required placeholder="Ex: Solicitação de Reunião Técnica sobre o CARTEC" 
+                                   class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Mensagem *</label>
+                            <textarea rows="4" required placeholder="Escreva aqui os detalhes da sua mensagem..." 
+                                      class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-400"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-sm hover:opacity-95 transition shadow-lg shadow-sky-500/25">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>Enviar para alexcostasantarosa@gmail.com
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="glass-panel border-t border-slate-800/80 mt-16 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="space-y-3 md:col-span-2">
+                    <div class="flex items-center space-x-3">
+                        <span class="font-tech text-2xl font-black text-white">CAR<span class="text-sky-400">TEC</span></span>
+                    </div>
+                    <p class="text-xs text-slate-300 max-w-sm leading-relaxed">
+                        TECNOLOGIA AUTOMOTIVA AVANÇADA • Proposta de Projeto para Autocarro Autónomo de Emergência com Resposta Ativa e Supressão Térmica Instantânea.
+                    </p>
+                    <p class="text-xs text-sky-400 font-semibold">
+                        Autor: Adilson Lourenço da Costa Santa-Rosa (Santa-Rosa CORP)
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Acesso Rápido</h4>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="#" onclick="switchTab('inicio'); return false;" class="hover:text-sky-400">Visão Geral</a></li>
+                        <li><a href="#" onclick="switchTab('modulo1'); return false;" class="hover:text-sky-400">Módulo 01: O Problema Global</a></li>
+                        <li><a href="#" onclick="switchTab('modulo2'); return false;" class="hover:text-sky-400">Módulo 02: A Solução Proposta</a></li>
+                        <li><a href="#" onclick="switchTab('estado'); return false;" class="hover:text-sky-400">Estado do Projeto</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Contacto Oficial</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        E-mail: <a href="mailto:alexcostasantarosa@gmail.com" class="text-sky-400 hover:underline">alexcostasantarosa@gmail.com</a>
+                    </p>
+                    <p class="text-xs text-slate-500 mt-2">Santa-Rosa CORP &copy; 2026. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Logic Script -->
+    <script>
+        let impactChartInstance = null;
+
+        // Initialize Chart.js for Projected Reductions Comparison
+        function renderImpactChart() {
+            const ctx = document.getElementById('impactChartCanvas');
+            if (!ctx) return;
+
+            if (impactChartInstance) {
+                impactChartInstance.destroy();
+            }
+
+            impactChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        'Colisões Fatais', 
+                        'Índice de Gravidade', 
+                        'Danos Materiais', 
+                        'Propagação de Incêndios'
+                    ],
+                    datasets: [
+                        {
+                            label: 'Sem CARTEC (Tradicional)',
+                            data: [100, 100, 100, 100],
+                            backgroundColor: 'rgba(239, 68, 68, 0.75)',
+                            borderColor: '#ef4444',
+                            borderWidth: 1.5,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Com CARTEC (Projetado)',
+                            data: [12, 18, 18, 5],
+                            backgroundColor: 'rgba(56, 189, 248, 0.85)',
+                            borderColor: '#38bdf8',
+                            borderWidth: 1.5,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '% do nível crítico';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.06)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#cbd5e1',
+                                font: {
+                                    size: 11,
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Global Navigation Tab Switcher
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            const selectedTab = document.getElementById('tab-' + tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            const selectedNav = document.getElementById('nav-' + tabId);
+            if (selectedNav) {
+                selectedNav.classList.add('active');
+            }
+
+            document.getElementById('mobile-menu').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (tabId === 'inicio') {
+                setTimeout(renderImpactChart, 100);
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Interactive Toast Message
+        function showToast(title, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            toast.className = `pointer-events-auto p-4 rounded-2xl bg-slate-900/95 border border-sky-500/50 shadow-2xl backdrop-blur-md transform transition duration-300 text-xs space-y-1`;
+            toast.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+                    <strong class="text-white font-bold text-sm">${title}</strong>
+                </div>
+                <p class="text-slate-300">${message}</p>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        function handleFormSubmit(event, formType) {
+            event.preventDefault();
+            showToast(
+                `Mensagem Registada!`, 
+                `A sua comunicação referente a [${formType}] foi enviada com sucesso para alexcostasantarosa@gmail.com.`
+            );
+            event.target.reset();
+        }
+
+        // Reaction Distance Calculator Script
+        function calculateReactionDistance() {
+            const speed = parseInt(document.getElementById('speed-range').value);
+            document.getElementById('speed-val').innerText = speed + ' km/h';
+
+            const speedInMetersPerSec = speed / 3.6;
+            const distance = (speedInMetersPerSec * 1.5).toFixed(1);
+
+            document.getElementById('reaction-dist').innerText = distance.replace('.', ',') + ' metros';
+        }
+
+        // Sensor Explorer Interactivity
+        const sensorData = {
+            lidar: {
+                tag: 'MÓDULO DE PERCEÇÃO 01',
+                title: 'LIDAR Tridimensional (3D)',
+                desc: 'Mapeamento volumétrico de alta precisão da via através de feixes laser infravermelhos. Permite a geração de nuvens de pontos 3D que identificam obstáculos em frações de milissegundo, imunes a variações de iluminação.',
+                spec1: '100 Hz (100 scans/s)',
+                spec2: '300 Metros',
+                icon: 'fa-satellite-dish'
+            },
+            radar: {
+                tag: 'MÓDULO DE PERCEÇÃO 02',
+                title: 'Radares de Ondas Milimétricas (mmWave)',
+                desc: 'Monitorização espacial contínua operando em frequências milimétricas. Oferece alta precisão na deteção de velocidades relativas e penetração imune em denso nevoeiro, tempestades e fumo tóxico.',
+                spec1: '77-79 GHz mmWave',
+                spec2: 'All-Weather Operational',
+                icon: 'fa-radar'
+            },
+            visao: {
+                tag: 'MÓDULO DE PERCEÇÃO 03',
+                title: 'Visão Computacional & Deep Learning',
+                desc: 'Rede de câmaras HD de alta sensibilidade aliadas a algoritmos de visão artificial para classificação em tempo real de objetos, peões, faixas de rodagem e estimativa contínua do TTC (Time to Collision).',
+                spec1: 'Visão 360° Sem Pontos Cegos',
+                spec2: 'Cálculo Preditivo TTC',
+                icon: 'fa-camera-rotate'
+            },
+            dinamico: {
+                tag: 'MÓDULO DYN 04',
+                title: 'Sensores de Ângulo de Derrapagem (Slip Angle)',
+                desc: 'Unidades de medição inercial (IMU) integradas no chassis do autocarro para leitura instantânea de inclinação lateral e forças G, reajustando ativamente o Controlo Eletrónico de Estabilidade (ESC).',
+                spec1: 'Amostragem < 1ms',
+                spec2: 'Prevenção Anti-Capotamento',
+                icon: 'fa-gauge'
+            }
+        };
+
+        function selectSensor(key) {
+            const info = sensorData[key];
+            if (!info) return;
+
+            document.getElementById('sensor-display-tag').innerText = info.tag;
+            document.getElementById('sensor-display-title').innerText = info.title;
+            document.getElementById('sensor-display-desc').innerText = info.desc;
+            document.getElementById('sensor-display-spec1').innerText = info.spec1;
+            document.getElementById('sensor-display-spec2').innerText = info.spec2;
+            document.getElementById('sensor-display-icon').innerHTML = `<i class="fa-solid ${info.icon}"></i>`;
+
+            ['lidar', 'radar', 'visao', 'dinamico'].forEach(item => {
+                const btn = document.getElementById('sensor-btn-' + item);
+                if (btn) {
+                    if (item === key) {
+                        btn.className = 'p-4 rounded-2xl glass-panel border border-sky-500/40 cursor-pointer hover:border-sky-400 transition flex items-start space-x-4';
+                    } else {
+                        btn.className = 'p-4 rounded-2xl glass-panel border border-slate-800 cursor-pointer hover:border-sky-400 transition flex items-start space-x-4';
+                    }
+                }
+            });
+        }
+
+        // Initialize chart on DOM load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderImpactChart();
+        });
+    </script>
+</body>
+</html>

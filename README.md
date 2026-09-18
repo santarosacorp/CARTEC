@@ -363,5 +363,3 @@
                                 <div class="space-y-2">
                                     <div class="flex items-center justify-between text-xs p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
                                         <span c
-# CARTEC
-Tecnologia Automotiva Avançada

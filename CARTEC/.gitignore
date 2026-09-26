@@ -1,0 +1,16 @@
+<html>
+     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+     </head>
+    <body>Ficheiros do Sistema Operativo<br>​.DS_Store<br>.DS_Store?<br>._*<br>.Spotlight-V<a href="tel:100">100</a>
+        <br>.Trashes<br><a href="http://ehthumbs.db">ehthumbs.db</a>
+        <br><a href="http://Thumbs.db">Thumbs.db</a>
+        <br>​Ficheiros de Log e Temporários<br>​*.log<br>*.tmp<br>*.temp<br>​Configurações de IDEs e Editores de Código<br>
+        <a href="http://​.vscode">​.vscode</a>/<br>.idea/<br>*.swp<br>*.swo<br>​Ficheiros de Variáveis de Ambiente e Segredos<br>
+        <a href="http://​.env">​.env</a>
+        <br>.<a href="http://env.local">env.local</a>
+        <br>.<a href="http://env.development.local">env.development.local</a>
+        <br>.<a href="http://env.production.local">env.production.local</a>
+        <br>​Dependências e Builds (caso sejam adicionados no futuro)<br>​node_modules/<br>dist/<br>build/
+    </body>
+</html>
